@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Management</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333}
+.container{max-width:1000px;margin:0 auto;padding:20px}
+h1{text-align:center;margin-bottom:20px;color:#2c3e50}
+h2{margin:20px 0 10px;color:#34495e;border-bottom:2px solid #3498db;padding-bottom:5px}
+h3{margin:15px 0 8px;color:#555}
+#auth-section{background:white;padding:20px;border-radius:8px;margin-bottom:20px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+#app-section{display:none}
+.auth-forms{display:flex;gap:20px;flex-wrap:wrap}
+.auth-form{flex:1;min-width:280px}
+input,select,textarea{width:100%;padding:8px;margin:4px 0 10px;border:1px solid #ddd;border-radius:4px;font-size:14px}
+textarea{height:60px;resize:vertical}
+button{padding:8px 16px;border:none;border-radius:4px;cursor:pointer;font-size:14px;margin:2px}
+.btn-primary{background:#3498db;color:white}
+.btn-success{background:#27ae60;color:white}
+.btn-danger{background:#e74c3c;color:white}
+.btn-warning{background:#f39c12;color:white}
+button:hover{opacity:0.85}
+.user-bar{background:#2c3e50;color:white;padding:10px 20px;border-radius:8px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.user-bar span{font-size:14px}
+.role-badge{background:#e74c3c;padding:2px 8px;border-radius:10px;font-size:12px;margin-left:5px}
+.card{background:white;padding:15px;border-radius:8px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.card-header{display:flex;justify-content:space-between;align-items:center}
+.card-title{font-weight:bold;font-size:16px;color:#2c3e50}
+.card-info{font-size:13px;color:#777;margin-top:5px}
+.card-actions{display:flex;gap:5px}
+.tabs{display:flex;gap:5px;margin-bottom:15px;flex-wrap:wrap}
+.tab{padding:8px 16px;background:#ecf0f1;border:none;border-radius:4px;cursor:pointer;font-size:14px}
+.tab.active{background:#3498db;color:white}
+.message{padding:10px;border-radius:4px;margin:10px 0;font-size:14px}
+.message-success{background:#d4edda;color:#155724}
+.message-error{background:#f8d7da;color:#721c24}
+table{width:100%;border-collapse:collapse;margin:10px 0}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid #eee;font-size:14px}
+th{background:#f8f9fa;font-weight:bold}
+.comment{background:#f8f9fa;padding:10px;border-radius:4px;margin:5px 0}
+.comment-author{font-weight:bold;font-size:13px}
+.comment-date{font-size:11px;color:#999}
+.comment-text{margin-top:4px;font-size:14px}
+.admin-only{display:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Event Management System</h1>
+<div id="auth-section">
+<h2>Prijava / Registracija</h2>
+<div id="auth-message"></div>
+<div class="auth-forms">
+<div class="auth-form">
+<h3>Registracija</h3>
+<input type="text" id="reg-username" placeholder="Korisnicko ime">
+<input type="email" id="reg-email" placeholder="Email">
+<input type="password" id="reg-password" placeholder="Lozinka (min 6 znakova)">
+<button class="btn-success" onclick="register()">Registriraj se</button>
+</div>
+<div class="auth-form">
+<h3>Prijava</h3>
+<input type="email" id="login-email" placeholder="Email">
+<input type="password" id="login-password" placeholder="Lozinka">
+<button class="btn-primary" onclick="login()">Prijavi se</button>
+</div>
+</div>
+</div>
+<div id="app-section">
+<div class="user-bar">
+<span>Prijavljen kao: <strong id="user-display"></strong> <span id="role-badges"></span></span>
+<button class="btn-danger" onclick="logout()">Odjava</button>
+</div>
+<div class="tabs">
+<button class="tab active" onclick="showTab('events')">Dogadjaji</button>
+<button class="tab" onclick="showTab('categories')">Kategorije</button>
+<button class="tab" onclick="showTab('venues')">Lokacije</button>
+<button class="tab" onclick="showTab('registrations')">Moje prijave</button>
+<button class="tab admin-only" onclick="showTab('users')">Korisnici</button>
+</div>
+<div id="tab-message"></div>
+<div id="events-tab">
+<div class="admin-only">
+<h3>Kreiraj novi dogadjaj</h3>
+<div class="card">
+<input type="text" id="event-title" placeholder="Naziv dogadjaja">
+<textarea id="event-desc" placeholder="Opis"></textarea>
+<div style="display:flex;gap:10px"><input type="datetime-local" id="event-start"><input type="datetime-local" id="event-end"></div>
+<input type="number" id="event-max" placeholder="Max sudionika" value="100">
+<div style="display:flex;gap:10px"><select id="event-category"><option value="">Odaberi kategoriju</option></select><select id="event-venue"><option value="">Odaberi lokaciju</option></select></div>
+<button class="btn-success" onclick="createNewEvent()">Kreiraj dogadjaj</button>
+</div>
+</div>
+<h3>Svi dogadjaji</h3>
+<div id="events-list"></div>
+</div>
+<div id="categories-tab" style="display:none">
+<div class="admin-only">
+<h3>Dodaj kategoriju</h3>
+<div class="card">
+<input type="text" id="cat-name" placeholder="Naziv kategorije">
+<input type="text" id="cat-desc" placeholder="Opis (opcionalno)">
+<button class="btn-success" onclick="createCategory()">Dodaj</button>
+</div>
+</div>
+<h3>Sve kategorije</h3>
+<div id="categories-list"></div>
+</div>
+<div id="venues-tab" style="display:none">
+<div class="admin-only">
+<h3>Dodaj lokaciju</h3>
+<div class="card">
+<input type="text" id="venue-name" placeholder="Naziv lokacije">
+<input type="text" id="venue-address" placeholder="Adresa">
+<input type="number" id="venue-capacity" placeholder="Kapacitet" value="100">
+<button class="btn-success" onclick="createVenue()">Dodaj</button>
+</div>
+</div>
+<h3>Sve lokacije</h3>
+<div id="venues-list"></div>
+</div>
+<div id="registrations-tab" style="display:none">
+<h3>Moje prijave na dogadjaje</h3>
+<div id="registrations-list"></div>
+</div>
+<div id="users-tab" style="display:none">
+<h3>Svi korisnici</h3>
+<div id="users-list"></div>
+</div>
+</div>
+</div>
+<script>
+const API=window.location.origin+'/api';let token='',currentUser=null,isAdmin=false;
+async function apiCall(m,u,b=null){const o={method:m,headers:{'Content-Type':'application/json'}};if(token)o.headers['Authorization']='Bearer '+token;if(b)o.body=JSON.stringify(b);const r=await fetch(API+u,o);if(r.status===204)return null;if(r.status===401){logout();return null}const d=await r.json();if(!r.ok)throw new Error(d.message||'Greska');return d}
+function showMessage(id,t,e=false){const el=document.getElementById(id);el.innerHTML='<div class="message '+(e?'message-error':'message-success')+'">'+t+'</div>';setTimeout(()=>el.innerHTML='',4000)}
+function showTab(n){document.querySelectorAll('[id$="-tab"]').forEach(t=>t.style.display='none');document.getElementById(n+'-tab').style.display='block';document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));event.target.classList.add('active');if(n==='events')loadEvents();if(n==='categories')loadCategories();if(n==='venues')loadVenues();if(n==='registrations')loadMyRegistrations();if(n==='users')loadUsers()}
+function formatDate(d){return new Date(d).toLocaleString('hr-HR')}
+async function register(){try{const d=await apiCall('POST','/Auth/register',{username:document.getElementById('reg-username').value,email:document.getElementById('reg-email').value,password:document.getElementById('reg-password').value});handleLoginSuccess(d)}catch(e){showMessage('auth-message',e.message,true)}}
+async function login(){try{const d=await apiCall('POST','/Auth/login',{email:document.getElementById('login-email').value,password:document.getElementById('login-password').value});handleLoginSuccess(d)}catch(e){showMessage('auth-message',e.message,true)}}
+function handleLoginSuccess(d){token=d.token;currentUser=d;isAdmin=d.roles.includes('Admin');document.getElementById('auth-section').style.display='none';document.getElementById('app-section').style.display='block';document.getElementById('user-display').textContent=d.username+' ('+d.email+')';document.getElementById('role-badges').innerHTML=d.roles.map(r=>'<span class="role-badge">'+r+'</span>').join('');if(isAdmin)document.querySelectorAll('.admin-only').forEach(el=>el.style.display='block');loadEvents();loadCategories();loadVenues()}
+function logout(){token='';currentUser=null;isAdmin=false;document.getElementById('auth-section').style.display='block';document.getElementById('app-section').style.display='none';document.querySelectorAll('.admin-only').forEach(el=>el.style.display='none')}
+async function loadEvents(){try{const ev=await apiCall('GET','/Events');document.getElementById('events-list').innerHTML=ev.map(e=>'<div class="card"><div class="card-header"><span class="card-title">'+e.title+'</span><div class="card-actions"><button class="btn-primary" onclick="registerForEvent('+e.id+')">Prijavi se</button><button class="btn-primary" onclick="showEventComments('+e.id+')">Komentari</button>'+(isAdmin?'<button class="btn-danger" onclick="deleteExistingEvent('+e.id+')">Obrisi</button>':'')+'</div></div><div class="card-info">'+e.description+'<br><strong>Pocetak:</strong> '+formatDate(e.startDate)+' | <strong>Kraj:</strong> '+formatDate(e.endDate)+'<br><strong>Kategorija:</strong> '+e.categoryName+' | <strong>Lokacija:</strong> '+e.venueName+'<br><strong>Organizator:</strong> '+e.organizerUsername+' | <strong>Prijavljeno:</strong> '+e.registrationCount+'/'+e.maxParticipants+'</div></div>').join('')||'<p>Nema dogadjaja.</p>'}catch(e){document.getElementById('events-list').innerHTML='<p>Greska pri ucitavanju.</p>'}}
+async function createNewEvent(){try{await apiCall('POST','/Events',{title:document.getElementById('event-title').value,description:document.getElementById('event-desc').value,startDate:document.getElementById('event-start').value,endDate:document.getElementById('event-end').value,maxParticipants:parseInt(document.getElementById('event-max').value),categoryId:parseInt(document.getElementById('event-category').value),venueId:parseInt(document.getElementById('event-venue').value)});showMessage('tab-message','Dogadjaj kreiran!');loadEvents()}catch(e){showMessage('tab-message',e.message,true)}}
+async function deleteExistingEvent(id){if(!confirm('Obrisati dogadjaj?'))return;try{await apiCall('DELETE','/Events/'+id);showMessage('tab-message','Dogadjaj obrisan.');loadEvents()}catch(e){showMessage('tab-message',e.message,true)}}
+async function registerForEvent(id){try{await apiCall('POST','/Registrations',{eventId:id});showMessage('tab-message','Uspjesno prijavljeni!');loadEvents()}catch(e){showMessage('tab-message',e.message,true)}}
+async function showEventComments(id){try{const c=await apiCall('GET','/Comments/event/'+id);let h='<h3>Komentari</h3><div class="card"><textarea id="new-comment" placeholder="Napisi komentar..."></textarea><button class="btn-success" onclick="addComment('+id+')">Posalji</button></div>';h+=c.map(x=>'<div class="comment"><span class="comment-author">'+x.username+'</span> <span class="comment-date">'+formatDate(x.createdAt)+'</span><div class="comment-text">'+x.text+'</div>'+(isAdmin?'<button class="btn-danger" style="margin-top:5px;font-size:12px" onclick="deleteComment('+x.id+','+id+')">Obrisi</button>':'')+'</div>').join('')||'<p>Nema komentara.</p>';document.getElementById('events-list').innerHTML=h}catch(e){showMessage('tab-message',e.message,true)}}
+async function addComment(id){try{await apiCall('POST','/Comments',{text:document.getElementById('new-comment').value,eventId:id});showEventComments(id)}catch(e){showMessage('tab-message',e.message,true)}}
+async function deleteComment(cid,eid){try{await apiCall('DELETE','/Comments/'+cid);showEventComments(eid)}catch(e){showMessage('tab-message',e.message,true)}}
+async function loadCategories(){try{const c=await apiCall('GET','/Categories');document.getElementById('categories-list').innerHTML=c.map(x=>'<div class="card"><div class="card-header"><span class="card-title">'+x.name+'</span>'+(isAdmin?'<button class="btn-danger" onclick="deleteCategory('+x.id+')">Obrisi</button>':'')+'</div><div class="card-info">'+(x.description||'Bez opisa')+'</div></div>').join('')||'<p>Nema kategorija.</p>';const s=document.getElementById('event-category');if(s)s.innerHTML='<option value="">Odaberi kategoriju</option>'+c.map(x=>'<option value="'+x.id+'">'+x.name+'</option>').join('')}catch(e){}}
+async function createCategory(){try{await apiCall('POST','/Categories',{name:document.getElementById('cat-name').value,description:document.getElementById('cat-desc').value||null});showMessage('tab-message','Kategorija kreirana!');loadCategories()}catch(e){showMessage('tab-message',e.message,true)}}
+async function deleteCategory(id){if(!confirm('Obrisati?'))return;try{await apiCall('DELETE','/Categories/'+id);loadCategories()}catch(e){showMessage('tab-message',e.message,true)}}
+async function loadVenues(){try{const v=await apiCall('GET','/Venues');document.getElementById('venues-list').innerHTML=v.map(x=>'<div class="card"><div class="card-header"><span class="card-title">'+x.name+'</span>'+(isAdmin?'<button class="btn-danger" onclick="deleteVenue('+x.id+')">Obrisi</button>':'')+'</div><div class="card-info">'+x.address+' | Kapacitet: '+x.capacity+'</div></div>').join('')||'<p>Nema lokacija.</p>';const s=document.getElementById('event-venue');if(s)s.innerHTML='<option value="">Odaberi lokaciju</option>'+v.map(x=>'<option value="'+x.id+'">'+x.name+'</option>').join('')}catch(e){}}
+async function createVenue(){try{await apiCall('POST','/Venues',{name:document.getElementById('venue-name').value,address:document.getElementById('venue-address').value,capacity:parseInt(document.getElementById('venue-capacity').value)});showMessage('tab-message','Lokacija kreirana!');loadVenues()}catch(e){showMessage('tab-message',e.message,true)}}
+async function deleteVenue(id){if(!confirm('Obrisati?'))return;try{await apiCall('DELETE','/Venues/'+id);loadVenues()}catch(e){showMessage('tab-message',e.message,true)}}
+async function loadMyRegistrations(){try{const r=await apiCall('GET','/Registrations/my');document.getElementById('registrations-list').innerHTML=r.map(x=>'<div class="card"><div class="card-header"><span class="card-title">'+x.eventTitle+'</span><button class="btn-danger" onclick="cancelRegistration('+x.id+')">Otkazi</button></div><div class="card-info">Status: <strong>'+x.status+'</strong> | Prijavljeno: '+formatDate(x.registeredAt)+'</div></div>').join('')||'<p>Niste prijavljeni na niti jedan dogadjaj.</p>'}catch(e){document.getElementById('registrations-list').innerHTML='<p>Greska.</p>'}}
+async function cancelRegistration(id){if(!confirm('Otkazati?'))return;try{await apiCall('DELETE','/Registrations/'+id);loadMyRegistrations()}catch(e){showMessage('tab-message',e.message,true)}}
+async function loadUsers(){try{const u=await apiCall('GET','/Users');document.getElementById('users-list').innerHTML='<table><tr><th>ID</th><th>Korisnik</th><th>Email</th><th>Uloge</th><th>Akcije</th></tr>'+u.map(x=>'<tr><td>'+x.id+'</td><td>'+x.username+'</td><td>'+x.email+'</td><td>'+x.roles.join(', ')+'</td><td><button class="btn-warning" onclick="assignAdmin('+x.id+')">Dodaj Admin</button> <button class="btn-danger" onclick="deleteUser('+x.id+')">Obrisi</button></td></tr>').join('')+'</table>'}catch(e){document.getElementById('users-list').innerHTML='<p>Greska.</p>'}}
+async function assignAdmin(id){try{await apiCall('POST','/Users/'+id+'/assign-role','Admin');showMessage('tab-message','Admin dodijeljen!');loadUsers()}catch(e){showMessage('tab-message',e.message,true)}}
+async function deleteUser(id){if(!confirm('Obrisati?'))return;try{await apiCall('DELETE','/Users/'+id);loadUsers()}catch(e){showMessage('tab-message',e.message,true)}}
+</script>
+</body>
+</html>
