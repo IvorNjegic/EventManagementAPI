@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventManagementProject.DTOs;
 
+// DTO za kreiranje i ažuriranje lokacije
 public class VenueCreateDto
 {
     [Required]
@@ -16,6 +17,7 @@ public class VenueCreateDto
     public int Capacity { get; set; }
 }
 
+// DTO za prikaz lokacije
 public class VenueResponseDto
 {
     public int Id { get; set; }

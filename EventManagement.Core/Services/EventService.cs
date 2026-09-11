@@ -3,6 +3,7 @@ using EventManagement.Core.Models;
 
 namespace EventManagement.Core.Services;
 
+// Servis s osnovnim CRUD operacijama nad događajima
 public class EventService : IEventService
 {
     private readonly IRepository<Event> _repository;

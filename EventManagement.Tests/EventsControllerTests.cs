@@ -39,10 +39,11 @@ public class EventsControllerTests
         };
     }
 
+    // Dohvat svih događaja treba vratiti Ok s listom događaja
     [Fact]
     public async Task GetAll_ReturnsOkWithEvents()
     {
-        // Arrange
+        // Priprema
         var events = new List<Event>
         {
             new Event
@@ -56,19 +57,20 @@ public class EventsControllerTests
         };
         _mockEventRepo.Setup(r => r.GetAllWithDetailsAsync()).ReturnsAsync(events);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.GetAll();
 
-        // Assert
+        // Provjera
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returnedEvents = Assert.IsAssignableFrom<IEnumerable<EventResponseDto>>(okResult.Value);
         Assert.Single(returnedEvents);
     }
 
+    // Kada događaj postoji, dohvat po ID-u treba vratiti Ok s tim događajem
     [Fact]
     public async Task GetById_ReturnsOk_WhenEventExists()
     {
-        // Arrange
+        // Priprema
         var ev = new Event
         {
             Id = 1, Title = "Test Event",
@@ -80,32 +82,34 @@ public class EventsControllerTests
         };
         _mockEventRepo.Setup(r => r.GetByIdWithDetailsAsync(1)).ReturnsAsync(ev);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.GetById(1);
 
-        // Assert
+        // Provjera
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var response = Assert.IsType<EventResponseDto>(okResult.Value);
         Assert.Equal("Test Event", response.Title);
     }
 
+    // Kada događaj ne postoji, dohvat po ID-u treba vratiti NotFound
     [Fact]
     public async Task GetById_ReturnsNotFound_WhenEventDoesNotExist()
     {
-        // Arrange
+        // Priprema
         _mockEventRepo.Setup(r => r.GetByIdWithDetailsAsync(99)).ReturnsAsync((Event?)null);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.GetById(99);
 
-        // Assert
+        // Provjera
         Assert.IsType<NotFoundObjectResult>(result.Result);
     }
 
+    // Kreiranje s ispravnim podacima treba vratiti CreatedAtAction (201)
     [Fact]
     public async Task Create_ReturnsCreatedAtAction_WhenValid()
     {
-        // Arrange
+        // Priprema
         SetupUserClaims(1, "Admin");
         var dto = new EventCreateDto
         {
@@ -125,39 +129,41 @@ public class EventsControllerTests
         _mockEventRepo.Setup(r => r.AddAsync(It.IsAny<Event>())).Returns(Task.CompletedTask);
         _mockEventRepo.Setup(r => r.GetByIdWithDetailsAsync(It.IsAny<int>())).ReturnsAsync(createdEvent);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.Create(dto);
 
-        // Assert
+        // Provjera
         var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
         Assert.Equal(201, createdResult.StatusCode);
     }
 
+    // Brisanje postojećeg događaja treba vratiti NoContent
     [Fact]
     public async Task Delete_ReturnsNoContent_WhenEventExists()
     {
-        // Arrange
+        // Priprema
         var ev = new Event { Id = 1, Title = "Test" };
         _mockEventRepo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(ev);
         _mockEventRepo.Setup(r => r.DeleteAsync(1)).Returns(Task.CompletedTask);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.Delete(1);
 
-        // Assert
+        // Provjera
         Assert.IsType<NoContentResult>(result);
     }
 
+    // Brisanje nepostojećeg događaja treba vratiti NotFound
     [Fact]
     public async Task Delete_ReturnsNotFound_WhenEventDoesNotExist()
     {
-        // Arrange
+        // Priprema
         _mockEventRepo.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Event?)null);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.Delete(99);
 
-        // Assert
+        // Provjera
         Assert.IsType<NotFoundObjectResult>(result);
     }
 }

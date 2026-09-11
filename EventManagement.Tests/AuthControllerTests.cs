@@ -31,10 +31,11 @@ public class AuthControllerTests
         _controller = new AuthController(_mockAuthService.Object, _mockConfig.Object, _mockLogger.Object);
     }
 
+    // Uspješna registracija treba vratiti Ok odgovor s tokenom i podacima korisnika
     [Fact]
     public async Task Register_ReturnsOk_WhenRegistrationSucceeds()
     {
-        // Arrange
+        // Priprema
         var dto = new RegisterDto { Username = "testuser", Email = "test@test.com", Password = "Test123!" };
         var user = new User { Id = 1, Username = "testuser", Email = "test@test.com" };
 
@@ -43,10 +44,10 @@ public class AuthControllerTests
         _mockAuthService.Setup(s => s.GetUserRolesAsync(user.Id))
             .ReturnsAsync(new List<string> { "User" });
 
-        // Act
+        // Izvršavanje
         var result = await _controller.Register(dto);
 
-        // Assert
+        // Provjera
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var response = Assert.IsType<AuthResponseDto>(okResult.Value);
         Assert.Equal("testuser", response.Username);
@@ -55,26 +56,28 @@ public class AuthControllerTests
         Assert.False(string.IsNullOrEmpty(response.Token));
     }
 
+    // Ako email već postoji, registracija treba vratiti BadRequest
     [Fact]
     public async Task Register_ReturnsBadRequest_WhenEmailAlreadyExists()
     {
-        // Arrange
+        // Priprema
         var dto = new RegisterDto { Username = "testuser", Email = "test@test.com", Password = "Test123!" };
 
         _mockAuthService.Setup(s => s.RegisterAsync(dto.Username, dto.Email, dto.Password))
             .ReturnsAsync((User?)null);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.Register(dto);
 
-        // Assert
+        // Provjera
         Assert.IsType<BadRequestObjectResult>(result.Result);
     }
 
+    // Ispravni podaci za prijavu trebaju vratiti Ok s generiranim tokenom
     [Fact]
     public async Task Login_ReturnsOk_WhenCredentialsAreValid()
     {
-        // Arrange
+        // Priprema
         var dto = new LoginDto { Email = "test@test.com", Password = "Test123!" };
         var user = new User { Id = 1, Username = "testuser", Email = "test@test.com" };
 
@@ -83,29 +86,30 @@ public class AuthControllerTests
         _mockAuthService.Setup(s => s.GetUserRolesAsync(user.Id))
             .ReturnsAsync(new List<string> { "User" });
 
-        // Act
+        // Izvršavanje
         var result = await _controller.Login(dto);
 
-        // Assert
+        // Provjera
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var response = Assert.IsType<AuthResponseDto>(okResult.Value);
         Assert.Equal("testuser", response.Username);
         Assert.False(string.IsNullOrEmpty(response.Token));
     }
 
+    // Neispravni podaci za prijavu trebaju vratiti Unauthorized
     [Fact]
     public async Task Login_ReturnsUnauthorized_WhenCredentialsAreInvalid()
     {
-        // Arrange
+        // Priprema
         var dto = new LoginDto { Email = "test@test.com", Password = "wrong" };
 
         _mockAuthService.Setup(s => s.LoginAsync(dto.Email, dto.Password))
             .ReturnsAsync((User?)null);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.Login(dto);
 
-        // Assert
+        // Provjera
         Assert.IsType<UnauthorizedObjectResult>(result.Result);
     }
 }

@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventManagementProject.DTOs;
 
+// DTO za kreiranje novog događaja
 public class EventCreateDto
 {
     [Required]
@@ -27,6 +28,7 @@ public class EventCreateDto
     public int VenueId { get; set; }
 }
 
+// DTO za ažuriranje postojećeg događaja
 public class EventUpdateDto
 {
     [Required]
@@ -52,6 +54,7 @@ public class EventUpdateDto
     public int VenueId { get; set; }
 }
 
+// DTO za prikaz podataka o događaju klijentu
 public class EventResponseDto
 {
     public int Id { get; set; }

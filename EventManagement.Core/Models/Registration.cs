@@ -1,5 +1,6 @@
 namespace EventManagement.Core.Models;
 
+// Model prijave korisnika na događaj
 public class Registration
 {
     public int Id { get; set; }

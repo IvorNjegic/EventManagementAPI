@@ -1,5 +1,6 @@
 namespace EventManagement.Core.Models;
 
+// Vezna tablica za M:N relaciju između korisnika i uloga
 public class UserRole
 {
     public int UserId { get; set; }

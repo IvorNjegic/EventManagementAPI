@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManagementProject.Controllers;
 
+// Kontroler za komentare na događajima
 [ApiController]
 [Route("api/[controller]")]
 public class CommentsController : ControllerBase

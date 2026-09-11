@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManagement.Infrastructure.Data;
 
+// Kontekst baze podataka - definira tablice i relacije (EF Core, Code First)
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }

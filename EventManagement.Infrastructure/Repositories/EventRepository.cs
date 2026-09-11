@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManagement.Infrastructure.Repositories;
 
+// Repozitorij za događaje - dohvat s uključenim povezanim podacima (Include)
 public class EventRepository : Repository<Event>, IEventRepository
 {
     public EventRepository(AppDbContext context) : base(context) { }

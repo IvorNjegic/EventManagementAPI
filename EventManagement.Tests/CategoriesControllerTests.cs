@@ -22,10 +22,11 @@ public class CategoriesControllerTests
         _controller = new CategoriesController(_mockRepo.Object, _mockLogger.Object);
     }
 
+    // Dohvat svih kategorija treba vratiti Ok s listom kategorija
     [Fact]
     public async Task GetAll_ReturnsOkWithCategories()
     {
-        // Arrange
+        // Priprema
         var categories = new List<EventCategory>
         {
             new EventCategory { Id = 1, Name = "Konferencija" },
@@ -33,55 +34,58 @@ public class CategoriesControllerTests
         };
         _mockRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(categories);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.GetAll();
 
-        // Assert
+        // Provjera
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returned = Assert.IsAssignableFrom<IEnumerable<CategoryResponseDto>>(okResult.Value);
         Assert.Equal(2, returned.Count());
     }
 
+    // Dohvat nepostojeće kategorije treba vratiti NotFound
     [Fact]
     public async Task GetById_ReturnsNotFound_WhenCategoryDoesNotExist()
     {
-        // Arrange
+        // Priprema
         _mockRepo.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((EventCategory?)null);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.GetById(99);
 
-        // Assert
+        // Provjera
         Assert.IsType<NotFoundObjectResult>(result.Result);
     }
 
+    // Kreiranje kategorije treba vratiti CreatedAtAction (201)
     [Fact]
     public async Task Create_ReturnsCreatedAtAction()
     {
-        // Arrange
+        // Priprema
         var dto = new CategoryCreateDto { Name = "Nova kategorija", Description = "Opis" };
         _mockRepo.Setup(r => r.AddAsync(It.IsAny<EventCategory>())).Returns(Task.CompletedTask);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.Create(dto);
 
-        // Assert
+        // Provjera
         var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
         Assert.Equal(201, createdResult.StatusCode);
     }
 
+    // Brisanje postojeće kategorije treba vratiti NoContent
     [Fact]
     public async Task Delete_ReturnsNoContent_WhenExists()
     {
-        // Arrange
+        // Priprema
         var category = new EventCategory { Id = 1, Name = "Test" };
         _mockRepo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(category);
         _mockRepo.Setup(r => r.DeleteAsync(1)).Returns(Task.CompletedTask);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.Delete(1);
 
-        // Assert
+        // Provjera
         Assert.IsType<NoContentResult>(result);
     }
 }

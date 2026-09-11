@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace EventManagementProject.Controllers;
 
+// Kontroler za registraciju i prijavu korisnika te generiranje JWT tokena
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase

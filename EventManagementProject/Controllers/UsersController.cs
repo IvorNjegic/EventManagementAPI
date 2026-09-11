@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementProject.Controllers;
 
+// Kontroler za administraciju korisnika - dostupno samo adminima
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Roles = "Admin")]

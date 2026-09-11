@@ -1,5 +1,6 @@
 namespace EventManagement.Core.Models;
 
+// Model korisnika sustava
 public class User
 {
     public int Id { get; set; }

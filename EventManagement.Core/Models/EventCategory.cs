@@ -1,5 +1,6 @@
 namespace EventManagement.Core.Models;
 
+// Model kategorije događaja
 public class EventCategory
 {
     public int Id { get; set; }

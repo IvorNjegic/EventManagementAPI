@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventManagementProject.DTOs;
 
+// DTO za kreiranje komentara
 public class CommentCreateDto
 {
     [Required]
@@ -12,6 +13,7 @@ public class CommentCreateDto
     public int EventId { get; set; }
 }
 
+// DTO za prikaz komentara
 public class CommentResponseDto
 {
     public int Id { get; set; }

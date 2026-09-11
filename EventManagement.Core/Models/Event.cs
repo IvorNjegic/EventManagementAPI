@@ -1,5 +1,6 @@
 namespace EventManagement.Core.Models;
 
+// Model događaja - središnji entitet aplikacije
 public class Event
 {
     public int Id { get; set; }

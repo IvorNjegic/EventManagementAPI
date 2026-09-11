@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManagement.Infrastructure.Repositories;
 
+// Repozitorij za korisnike - dohvat po emailu i rad s ulogama
 public class UserRepository : Repository<User>, IUserRepository
 {
     public UserRepository(AppDbContext context) : base(context) { }

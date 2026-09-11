@@ -3,6 +3,8 @@ using System.Text.Json;
 
 namespace EventManagementProject.Middleware;
 
+// Middleware koji hvata sve neuhvaćene iznimke u pipelineu, zapisuje ih u log
+// i klijentu vraća jedinstven JSON odgovor umjesto da procuri stack trace
 public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;

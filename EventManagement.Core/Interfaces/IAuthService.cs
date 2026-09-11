@@ -2,6 +2,7 @@ using EventManagement.Core.Models;
 
 namespace EventManagement.Core.Interfaces;
 
+// Sučelje servisa za autentifikaciju korisnika
 public interface IAuthService
 {
     Task<User?> RegisterAsync(string username, string email, string password);

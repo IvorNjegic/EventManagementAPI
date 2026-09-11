@@ -1,5 +1,6 @@
 namespace EventManagement.Core.Models;
 
+// Model komentara koji korisnik ostavlja na događaju
 public class Comment
 {
     public int Id { get; set; }

@@ -2,6 +2,7 @@ using EventManagement.Core.Models;
 
 namespace EventManagement.Core.Interfaces;
 
+// Sučelje servisa za rad s događajima
 public interface IEventService
 {
     Task<IEnumerable<Event>> GetAllAsync();

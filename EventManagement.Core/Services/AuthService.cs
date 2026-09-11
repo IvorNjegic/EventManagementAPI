@@ -3,6 +3,7 @@ using EventManagement.Core.Models;
 
 namespace EventManagement.Core.Services;
 
+// Servis za autentifikaciju - registracija, prijava i dodjela uloga
 public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;

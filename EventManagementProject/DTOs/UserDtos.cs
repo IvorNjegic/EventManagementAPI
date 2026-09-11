@@ -1,5 +1,6 @@
 namespace EventManagementProject.DTOs;
 
+// DTO za prikaz korisnika s pripadajućim ulogama
 public class UserResponseDto
 {
     public int Id { get; set; }

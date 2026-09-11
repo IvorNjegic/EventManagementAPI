@@ -2,6 +2,7 @@ using EventManagement.Core.Models;
 
 namespace EventManagement.Core.Interfaces;
 
+// Sučelje repozitorija korisnika - proširuje generički repozitorij dodatnim upitima
 public interface IUserRepository : IRepository<User>
 {
     Task<User?> GetByEmailAsync(string email);

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManagement.Infrastructure.Repositories;
 
+// Generički repozitorij s osnovnim CRUD operacijama za bilo koji entitet
 public class Repository<T> : IRepository<T> where T : class
 {
     protected readonly AppDbContext _context;

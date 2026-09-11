@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventManagementProject.DTOs;
 
+// DTO za kreiranje i ažuriranje kategorije
 public class CategoryCreateDto
 {
     [Required]
@@ -11,6 +12,7 @@ public class CategoryCreateDto
     public string? Description { get; set; }
 }
 
+// DTO za prikaz kategorije
 public class CategoryResponseDto
 {
     public int Id { get; set; }

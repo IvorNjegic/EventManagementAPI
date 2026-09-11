@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManagementProject.Controllers;
 
+// Kontroler za prijave korisnika na događaje
 [ApiController]
 [Route("api/[controller]")]
 public class RegistrationsController : ControllerBase

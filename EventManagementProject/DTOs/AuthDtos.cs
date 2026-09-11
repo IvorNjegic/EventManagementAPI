@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventManagementProject.DTOs;
 
+// DTO za registraciju novog korisnika
 public class RegisterDto
 {
     [Required]
@@ -17,6 +18,7 @@ public class RegisterDto
     public string Password { get; set; } = string.Empty;
 }
 
+// DTO za prijavu korisnika
 public class LoginDto
 {
     [Required]
@@ -27,6 +29,7 @@ public class LoginDto
     public string Password { get; set; } = string.Empty;
 }
 
+// DTO koji se vraća klijentu nakon uspješne prijave/registracije (sadrži JWT token)
 public class AuthResponseDto
 {
     public string Token { get; set; } = string.Empty;

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementProject.Controllers;
 
+// Kontroler za upravljanje kategorijama događaja
 [ApiController]
 [Route("api/[controller]")]
 public class CategoriesController : ControllerBase

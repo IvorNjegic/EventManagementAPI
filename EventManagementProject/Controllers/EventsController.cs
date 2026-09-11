@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementProject.Controllers;
 
+// Kontroler za upravljanje događajima (CRUD)
 [ApiController]
 [Route("api/[controller]")]
 public class EventsController : ControllerBase

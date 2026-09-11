@@ -22,65 +22,69 @@ public class VenuesControllerTests
         _controller = new VenuesController(_mockRepo.Object, _mockLogger.Object);
     }
 
+    // Dohvat svih lokacija treba vratiti Ok s listom lokacija
     [Fact]
     public async Task GetAll_ReturnsOkWithVenues()
     {
-        // Arrange
+        // Priprema
         var venues = new List<Venue>
         {
             new Venue { Id = 1, Name = "Arena", Address = "Zagreb", Capacity = 500 }
         };
         _mockRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(venues);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.GetAll();
 
-        // Assert
+        // Provjera
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returned = Assert.IsAssignableFrom<IEnumerable<VenueResponseDto>>(okResult.Value);
         Assert.Single(returned);
     }
 
+    // Dohvat nepostojeće lokacije treba vratiti NotFound
     [Fact]
     public async Task GetById_ReturnsNotFound_WhenVenueDoesNotExist()
     {
-        // Arrange
+        // Priprema
         _mockRepo.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Venue?)null);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.GetById(99);
 
-        // Assert
+        // Provjera
         Assert.IsType<NotFoundObjectResult>(result.Result);
     }
 
+    // Kreiranje lokacije treba vratiti CreatedAtAction (201)
     [Fact]
     public async Task Create_ReturnsCreatedAtAction()
     {
-        // Arrange
+        // Priprema
         var dto = new VenueCreateDto { Name = "Nova lokacija", Address = "Adresa", Capacity = 100 };
         _mockRepo.Setup(r => r.AddAsync(It.IsAny<Venue>())).Returns(Task.CompletedTask);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.Create(dto);
 
-        // Assert
+        // Provjera
         var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
         Assert.Equal(201, createdResult.StatusCode);
     }
 
+    // Brisanje postojeće lokacije treba vratiti NoContent
     [Fact]
     public async Task Delete_ReturnsNoContent_WhenExists()
     {
-        // Arrange
+        // Priprema
         var venue = new Venue { Id = 1, Name = "Test" };
         _mockRepo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(venue);
         _mockRepo.Setup(r => r.DeleteAsync(1)).Returns(Task.CompletedTask);
 
-        // Act
+        // Izvršavanje
         var result = await _controller.Delete(1);
 
-        // Assert
+        // Provjera
         Assert.IsType<NoContentResult>(result);
     }
 }

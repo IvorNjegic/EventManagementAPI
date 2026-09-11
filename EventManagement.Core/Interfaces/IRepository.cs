@@ -1,5 +1,6 @@
 namespace EventManagement.Core.Interfaces;
 
+// Generičko sučelje repozitorija - osnovne CRUD operacije nad entitetom
 public interface IRepository<T> where T : class
 {
     Task<IEnumerable<T>> GetAllAsync();

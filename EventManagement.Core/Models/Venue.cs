@@ -1,5 +1,6 @@
 namespace EventManagement.Core.Models;
 
+// Model lokacije na kojoj se održava događaj
 public class Venue
 {
     public int Id { get; set; }
